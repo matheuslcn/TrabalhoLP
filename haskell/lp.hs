@@ -52,7 +52,17 @@ anda' x y
     | not (null x) && head y == '!' = negacao x (drop 2 y)
     | otherwise = (False, x, y)
 
-anda :: [(Int, Int, Char)] -> String -> Bool
+anda :: [(Int, Int, Char)] -> String -> (Bool,(Int, Int, Char))
 anda x y = do
     let (resp, a, b) = anda' x y
-    resp
+    if resp then  anda (tail a) b
+    else (resp, head a)
+    
+main :: IO ()
+main  = do
+    x <- getLine
+    y <- getLine
+    let (a,b) = anda (read x :: [(Int, Int, Char)]) (read y :: String)
+    if a then putStrLn("Eba funcionou")
+    else putStrLn(show (pegaPrimeiro b) ++ show (pegaSegundo b) ++ show (pegaTerceiro b))
+        
