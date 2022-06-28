@@ -21,9 +21,8 @@ loop x y
 
 teste :: [(Int, Int, Char)] -> String -> (Bool, [(Int, Int, Char)], String)
 teste x y
-    | not (null x) && head (tail y) == ')' = (True, x, drop 2 y)
+    | not (null x) && head (tail y) == ')' = (True, x, finalDosParenteses y 1)
     | otherwise = anda' x y
-
 
 -- TEM COISA PRA ARRUMAR    
 escolha :: [(Int, Int, Char)] -> String -> (Bool, [(Int, Int, Char)], String)
@@ -33,14 +32,18 @@ escolha x y = do
 
 sequencial :: [(Int, Int, Char)] -> String -> (Bool, [(Int, Int, Char)], String)
 sequencial x y
-    | not (null x) && (pegaTerceiro (head x) == head y) && (head (tail y) == ')') = (True, tail x, drop 2 y)
-    | not (null x) && (pegaTerceiro (head x) == head y) && (head (tail y) == ',') = sequencial (tail x) (drop 2 y)
-    | otherwise = anda' x y
+    | not (null x) && (pegaTerceiro (head x) == head y) && (head (tail y) == ')') = (True, tail x, finalDosParenteses y 1)
+    | not (null x) && (pegaTerceiro (head x) == head y) && (head (tail y) == ',') = sequencial (tail x) (finalDosParenteses y 1)
+    | otherwise = do
+        let (r, a, b) = anda' x y
+        if r then sequencial a (finalDosParenteses b 1) else (r, a, b)
 
 negacao :: [(Int, Int, Char)] -> String -> (Bool, [(Int, Int, Char)], String)
-negacao x y = do
-    let (r, a, prox) = anda' x y
-    (not r, a, prox)
+negacao x y
+    | not (null y) && (head (tail y) == ')') = (False, x, finalDosParenteses y 1)
+    | otherwise = do
+        let (r, a, prox) = anda' x y
+        (not r, a, prox)
 
 anda' :: [(Int, Int, Char)] -> String -> (Bool, [(Int, Int, Char)], String)
 anda' a [] = (null a, a, "")
