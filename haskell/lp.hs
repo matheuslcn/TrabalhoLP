@@ -5,13 +5,19 @@ pegaSegundo (_,x,_) = x
 pegaTerceiro :: (a, b, c) -> c
 pegaTerceiro (_,_,x) = x
 
+finalDosParenteses :: String -> Int -> String
+finalDosParenteses a 0 = a
+finalDosParenteses a x
+    | head a == '(' = finalDosParenteses (tail a) (x+1)
+    | head a == ')' = finalDosParenteses (tail a) (x-1)
+    | otherwise = finalDosParenteses (tail a) x
+
 loop :: [(Int, Int, Char)] -> String -> (Bool, [(Int, Int, Char)], String)
 loop x y
-    | null x = anda' x y
     | not (null x) && (pegaTerceiro (head x) == head y) && (head (tail y) == ')') = loop (tail x) y
-    | otherwise = do -- TA COM PROBLEMA 
+    | otherwise = do
         let (r, a, b) = anda' x y
-        if r then loop a (tail b) else anda' x b
+        if r then loop a y else anda' x (finalDosParenteses b 1)
 
 teste :: [(Int, Int, Char)] -> String -> (Bool, [(Int, Int, Char)], String)
 teste x y
@@ -19,15 +25,9 @@ teste x y
     | otherwise = anda' x y
 
 
--- TEM COISA PRA ARRUMAR
+-- TEM COISA PRA ARRUMAR    
 escolha :: [(Int, Int, Char)] -> String -> (Bool, [(Int, Int, Char)], String)
-escolha x y 
-    | not (null x) && (pegaTerceiro (head x) == head y) && (head (tail y) == ')') = (True, tail x, drop 2 y)
-    | not (null x) && (pegaTerceiro (head x) == head y) && (head (tail y) == ',') = do 
-       let (_, _, prox) = anda' x y
-       (True, tail x, prox)
-    | not (null x) && (pegaTerceiro (head x) /= head y) = escolha x (drop 2 y)
-    | otherwise = do
+escolha x y = do
        let (r, a, prox) = anda' x y
        if r then (r, a, prox) else anda' x prox
 
@@ -43,14 +43,13 @@ negacao x y = do
     (not r, a, prox)
 
 anda' :: [(Int, Int, Char)] -> String -> (Bool, [(Int, Int, Char)], String)
-anda' [] a = (null a, [], a)
 anda' a [] = (null a, a, "")
 anda' x y
-    | head y == '?' = teste x (drop 2 y)
-    | head y == 'U' = escolha x (drop 2 y)
     | head y == '*' = loop x (drop 2 y)
-    | head y == ';' = sequencial x (drop 2 y)
-    | head y == '!' = negacao x (drop 2 y)
+    | not (null x) && head y == '?' = teste x (drop 2 y)
+    | not (null x) && head y == 'U' = escolha x (drop 2 y)
+    | not (null x) && head y == ';' = sequencial x (drop 2 y)
+    | not (null x) && head y == '!' = negacao x (drop 2 y)
     | otherwise = (False, x, y)
 
 anda :: [(Int, Int, Char)] -> String -> Bool
