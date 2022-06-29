@@ -26,14 +26,14 @@ teste x y
     | not (null x) && head (tail y) == ')' = (True, x, finalDosParenteses y 1)
     | otherwise = anda' x y
 
--- TEM COISA PRA ARRUMAR
 escolha :: [(Int, Int, Char)] -> String -> (Bool, [(Int, Int, Char)], String)
-escolha x y 
+escolha x y
     | not (null x) && (pegaTerceiro (head x) == head y) && ((head (tail y) == ',') || (head (tail y) == ')')) = (True, tail x, finalDosParenteses y 1)
     | not (null x) && (pegaTerceiro (head x) /= head y) && (head (tail y) == ',') = escolha x (drop 2 y)
     | otherwise = do
        let (r, a, prox) = anda' x y
-       if r then (r, a, prox) else anda' x prox
+       if r then (r, a, prox)
+       else let (j, i, k) = anda' x prox in (j, i, finalDosParenteses k 1)
 
 sequencial :: [(Int, Int, Char)] -> String -> (Bool, [(Int, Int, Char)], String)
 sequencial x y
@@ -65,12 +65,12 @@ anda x y = do
     let (resp, a, b) = anda' x y
     if resp then  anda (tail a) b
     else (resp, head a)
-    
+
 main :: IO ()
 main  = do
     x <- getLine
     y <- getLine
     let (a,b) = anda (read x :: [(Int, Int, Char)]) (read y :: String)
-    if a then putStrLn("Eba funcionou")
+    if a then putStrLn "Eba funcionou"
     else putStrLn(show (pegaPrimeiro b) ++ show (pegaSegundo b) ++ show (pegaTerceiro b))
         
