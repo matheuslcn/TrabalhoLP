@@ -26,7 +26,7 @@ teste x y
     | not (null x) && head (tail y) == ')' = (True, x, finalDosParenteses y 1)
     | otherwise = anda' x y
 
--- TEM COISA PRA ARRUMAR    
+-- TEM COISA PRA ARRUMAR
 escolha :: [(Int, Int, Char)] -> String -> (Bool, [(Int, Int, Char)], String)
 escolha x y 
     | not (null x) && (pegaTerceiro (head x) == head y) && ((head (tail y) == ',') || (head (tail y) == ')')) = (True, tail x, finalDosParenteses y 1)
