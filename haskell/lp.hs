@@ -26,14 +26,18 @@ teste x y
 
 -- TEM COISA PRA ARRUMAR    
 escolha :: [(Int, Int, Char)] -> String -> (Bool, [(Int, Int, Char)], String)
-escolha x y = do
+escolha x y 
+    | not (null x) && (pegaTerceiro (head x) == head y) && ((head (tail y) == ',') || (head (tail y) == ')')) = (True, tail x, finalDosParenteses y 1)
+    | not (null x) && (pegaTerceiro (head x) /= head y) && (head (tail y) == ',') = escolha x (drop 2 y)
+    | otherwise = do
        let (r, a, prox) = anda' x y
        if r then (r, a, prox) else anda' x prox
 
 sequencial :: [(Int, Int, Char)] -> String -> (Bool, [(Int, Int, Char)], String)
 sequencial x y
-    | not (null x) && (pegaTerceiro (head x) == head y) && (head (tail y) == ')') = (True, tail x, finalDosParenteses y 1)
-    | not (null x) && (pegaTerceiro (head x) == head y) && (head (tail y) == ',') = sequencial (tail x) (finalDosParenteses y 1)
+    | not (null y) && head y == ',' = sequencial x (tail y)
+    | not (null x) && not (null y) && (pegaTerceiro (head x) == head y) && (head (tail y) == ')') = (True, tail x, finalDosParenteses y 1)
+    | not (null x) && not (null y) && (pegaTerceiro (head x) == head y) && (head (tail y) == ',') = sequencial (tail x) (drop 2 y)
     | otherwise = do
         let (r, a, b) = anda' x y
         if r then sequencial a (finalDosParenteses b 1) else (r, a, b)
