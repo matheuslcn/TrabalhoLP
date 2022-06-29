@@ -6,7 +6,9 @@ pegaTerceiro :: (a, b, c) -> c
 pegaTerceiro (_,_,x) = x
 
 finalDosParenteses :: String -> Int -> String
-finalDosParenteses a 0 = a
+finalDosParenteses a 0
+    | not (null a) && head a == ',' = tail a
+    | otherwise = a
 finalDosParenteses a x
     | head a == '(' = finalDosParenteses (tail a) (x+1)
     | head a == ')' = finalDosParenteses (tail a) (x-1)
@@ -17,7 +19,7 @@ loop x y
     | not (null x) && (pegaTerceiro (head x) == head y) && (head (tail y) == ')') = loop (tail x) y
     | otherwise = do
         let (r, a, b) = anda' x y
-        if r then loop a y else anda' x (finalDosParenteses b 1)
+        if r then loop a y else (True, x, b)
 
 teste :: [(Int, Int, Char)] -> String -> (Bool, [(Int, Int, Char)], String)
 teste x y
@@ -35,12 +37,11 @@ escolha x y
 
 sequencial :: [(Int, Int, Char)] -> String -> (Bool, [(Int, Int, Char)], String)
 sequencial x y
-    | not (null y) && head y == ',' = sequencial x (tail y)
     | not (null x) && not (null y) && (pegaTerceiro (head x) == head y) && (head (tail y) == ')') = (True, tail x, finalDosParenteses y 1)
     | not (null x) && not (null y) && (pegaTerceiro (head x) == head y) && (head (tail y) == ',') = sequencial (tail x) (drop 2 y)
     | otherwise = do
         let (r, a, b) = anda' x y
-        if r then sequencial a (finalDosParenteses b 1) else (r, a, b)
+        if r then sequencial a (finalDosParenteses b 1) else (r, a, finalDosParenteses b 1)
 
 negacao :: [(Int, Int, Char)] -> String -> (Bool, [(Int, Int, Char)], String)
 negacao x y
