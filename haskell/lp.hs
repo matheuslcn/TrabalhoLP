@@ -5,6 +5,19 @@ pegaSegundo (_,x,_) = x
 pegaTerceiro :: (a, b, c) -> c
 pegaTerceiro (_,_,x) = x
 
+--pulaNo :: [(Int, Int, Char)] -> Int -> [(Int, Int,Char)]
+--pulaNo x y
+--    | (null x) = []
+--    | (pegaPrimeiro ( head x) == y + 1) = x
+--    | (pegaPrimeiro ( head x) == -1 ) = []
+--    | otherwise pulaNo ( tail x ) y
+
+--procuraProx :: [(Int, Int, Char)] -> (Int, Int, Char) -> [(Int, Int,Char)]
+--procuraProx x y 
+--    | (null x) = []
+--    | (pegaPrimeiro(head x )) == (pegaPrimeiro y) = x
+--    | otherwise procuraProx (tail x y)
+
 finalDosParenteses :: String -> Int -> String
 finalDosParenteses a 0
     | not (null a) && head a == ',' = tail a
@@ -65,6 +78,10 @@ anda x y = do
     let (resp, a, b) = anda' x y
     if resp then  anda (tail a) b
     else (resp, head a)
+
+
+--[(1,2,'a'),(1,3,'b'),(2,4,'a'),(4,0,'a')] ";(a,a,a)"
+
 
 main :: IO ()
 main  = do
