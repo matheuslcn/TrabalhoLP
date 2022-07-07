@@ -38,10 +38,6 @@ loop x y
         let (r, a, b) = anda' x y
         if r then loop a y else (True, x, b)
 
-teste :: [(Int, Int, Char)] -> String -> (Bool, [(Int, Int, Char)], String)
-teste x y
-    | not (null x) && head (tail y) == ')' = (True, x, finalDosParenteses y 1)
-    | otherwise = anda' x y
 
 escolha :: [(Int, Int, Char)] -> String -> (Bool, [(Int, Int, Char)], String)
 escolha x y
@@ -60,21 +56,13 @@ sequencial x y
         let (r, a, b) = anda' x y
         if r then sequencial a (finalDosParenteses b 1) else (r, a, finalDosParenteses b 1)
 
-negacao :: [(Int, Int, Char)] -> String -> (Bool, [(Int, Int, Char)], String)
-negacao x y
-    | not (null y) && (head (tail y) == ')') = (False, x, finalDosParenteses y 1)
-    | otherwise = do
-        let (r, a, prox) = anda' x y
-        (not r, a, finalDosParenteses prox 1)
 
 anda' :: [(Int, Int, Char)] -> String -> (Bool, [(Int, Int, Char)], String)
 anda' a [] = (null a, a, "")
 anda' x y
     | head y == '*' = loop x (drop 2 y)
-    | not (null x) && head y == '?' = teste x (drop 2 y)
     | not (null x) && head y == 'U' = escolha x (drop 2 y)
     | not (null x) && head y == ';' = sequencial x (drop 2 y)
-    | not (null x) && head y == '!' = negacao x (drop 2 y)
     | otherwise = (False, x, y)
 
 anda :: [(Int, Int, Char)] -> String -> (Bool,(Int, Int, Char))
